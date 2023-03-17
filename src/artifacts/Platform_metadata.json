@@ -6,27 +6,30 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
-				"stateMutability": "nonpayable",
-				"type": "constructor"
-			},
-			{
+				"anonymous": false,
 				"inputs": [
 					{
+						"indexed": false,
 						"internalType": "address",
-						"name": "_user",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "_project",
+						"name": "_addr",
 						"type": "address"
 					}
 				],
-				"name": "addMember",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
+				"name": "addr",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "_value",
+						"type": "uint256"
+					}
+				],
+				"name": "currency",
+				"type": "event"
 			},
 			{
 				"inputs": [
@@ -52,9 +55,9 @@
 				"name": "mappingProject",
 				"outputs": [
 					{
-						"internalType": "contract Project",
-						"name": "project",
-						"type": "address"
+						"internalType": "contract Project[]",
+						"name": "",
+						"type": "address[]"
 					}
 				],
 				"stateMutability": "view",
@@ -82,6 +85,29 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256",
+						"name": "_idx",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "_addr",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "_ipfsHash",
+						"type": "string"
+					}
+				],
+				"name": "pushHash",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "string",
 						"name": "_name",
 						"type": "string"
@@ -95,32 +121,19 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "_user",
-						"type": "address"
+						"internalType": "uint256",
+						"name": "_idx",
+						"type": "uint256"
 					},
 					{
-						"internalType": "address",
-						"name": "_project",
-						"type": "address"
+						"internalType": "string",
+						"name": "_ipfsHash",
+						"type": "string"
 					}
 				],
-				"name": "requestAddMember",
+				"name": "sendHash",
 				"outputs": [],
 				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_addr",
-						"type": "address"
-					}
-				],
-				"name": "test",
-				"outputs": [],
-				"stateMutability": "view",
 				"type": "function"
 			}
 		],
@@ -137,7 +150,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"home/server/hsin/ipfs-example/src/APP.sol": "Platform"
+			"Decentralized_Platform/src/APP.sol": "Platform"
 		},
 		"evmVersion": "berlin",
 		"libraries": {},
@@ -151,12 +164,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"home/server/hsin/ipfs-example/src/APP.sol": {
-			"keccak256": "0xe67f67a53d48fe714fc98ba745af3528a0e9db4ab3dd7487f045be6c0770073f",
+		"Decentralized_Platform/src/APP.sol": {
+			"keccak256": "0xdb0b67e046ed1adb89cd2f2ef5df67bad113626a9f4ab0f23cae85c438d087c5",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://5c8718cbde0a4cd03a87923615425e2cd6c740f5ae09f671ab5e777c4f9dddc9",
-				"dweb:/ipfs/QmZsJjdakR1AWoRweEe2AoxyFJRXRQnNLPt4VHvQCATTDn"
+				"bzz-raw://082304938225d4aa067c1de4e07b1a3f27a5bda4111785544a14d1c68e88b996",
+				"dweb:/ipfs/QmRG7UVJ7mGdNwSemvv9U1KK9uaqxwaf5eiaDnWiBscE2c"
 			]
 		}
 	},

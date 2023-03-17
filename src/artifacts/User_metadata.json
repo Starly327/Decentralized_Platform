@@ -8,6 +8,11 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "_addr",
+						"type": "address"
+					},
+					{
 						"internalType": "string",
 						"name": "_name",
 						"type": "string"
@@ -56,7 +61,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"home/server/hsin/ipfs-example/src/APP.sol": "User"
+			"Decentralized_Platform/src/APP.sol": "User"
 		},
 		"evmVersion": "berlin",
 		"libraries": {},
@@ -70,12 +75,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"home/server/hsin/ipfs-example/src/APP.sol": {
-			"keccak256": "0xe67f67a53d48fe714fc98ba745af3528a0e9db4ab3dd7487f045be6c0770073f",
+		"Decentralized_Platform/src/APP.sol": {
+			"keccak256": "0xdb0b67e046ed1adb89cd2f2ef5df67bad113626a9f4ab0f23cae85c438d087c5",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://5c8718cbde0a4cd03a87923615425e2cd6c740f5ae09f671ab5e777c4f9dddc9",
-				"dweb:/ipfs/QmZsJjdakR1AWoRweEe2AoxyFJRXRQnNLPt4VHvQCATTDn"
+				"bzz-raw://082304938225d4aa067c1de4e07b1a3f27a5bda4111785544a14d1c68e88b996",
+				"dweb:/ipfs/QmRG7UVJ7mGdNwSemvv9U1KK9uaqxwaf5eiaDnWiBscE2c"
 			]
 		}
 	},
