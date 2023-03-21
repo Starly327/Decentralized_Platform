@@ -5,15 +5,36 @@ contract User {
     //平台用戶
     address addr;
     string name;
-    // uint gender;
-    // uint weight;
-    uint timestamp;
-    Project[] project;
+    uint hub;
+    uint authority;
+    Project[] projectArray;
 
     constructor(address _addr, string memory _name) {
         addr = _addr;
         name = _name;
-        timestamp = block.timestamp;
+        hub = 1;
+        authority = 1;
+    }
+
+    function addProject(address _addr, Project _project) public {
+        require(addr == _addr, "you are not user");
+        projectArray.push(_project);
+    }
+
+    function addHub(uint _auth) public {
+        hub += _auth;
+    }
+
+    function addAuth(uint _hub) public {
+        authority += _hub;
+    }
+
+    function getHub() public view returns (uint) {
+        return hub;
+    }
+
+    function getAuth() public view returns (uint) {
+        return authority;
     }
 
     function getAddr() public view returns (address) {
@@ -23,19 +44,21 @@ contract User {
     function getName() public view returns (string memory) {
         return name;
     }
-    // function addProject()
 }
 
+//-----------------------------------------------------------------------------
 contract Project {
     address owner;
-    address[] memberArray;
     string projectName;
     uint timestamp;
     mapping(address => string[]) ipfsMap; //confirm
+    string[] ipfsArray; //confirm
     string[] ipfsWaitingArray; //not confirm
-    address[] memberWaitingArray;
-
-    // mapping(string => address) ipfsWaitingAddr;
+    address[] memberArray; //confirm
+    address[] memberWaitingArray; //not confirm
+    User[][] scoreArray;
+    User[] temp;
+    event value(uint i);
 
     constructor(address _addr, string memory _projectName) payable {
         owner = _addr;
@@ -44,40 +67,106 @@ contract Project {
         memberArray.push(_addr);
     }
 
-    // function addMember(User _user) public isOwner{
-    //     memberArray.push(_user);
-    // }
+    function onlyMember(address _addr) internal view returns (bool b) {
+        b = true;
+        for (uint i = 0; i < memberArray.length; i++)
+            if (memberArray[i] == _addr) b = false;
+        if (b) revert("not project member");
+    }
 
-    // function requestAddMember(User _user) public {
-    //     memberWaitingArray.push(_user);
-    // }
+    function scoreMember(User _from, User _to, uint _score) public {
+        //onlyMember
+        onlyMember(_from.getAddr());
+        onlyMember(_to.getAddr());
+        temp.push(_from);
+        temp.push(_to);
+        for (uint i = 0; i < scoreArray.length; ++i)
+            if (
+                keccak256(abi.encodePacked(scoreArray[i])) ==
+                keccak256(abi.encodePacked(temp))
+            ) revert("already scored");
 
-    function sendHash(string memory _ipfsHash) public {
-        //成員上傳未審核ipfs給owner
-        uint index = checkWaitingArray(_ipfsHash);
-        if (index == 0) ipfsWaitingArray.push(_ipfsHash);
+        scoreArray.push(temp);
+        temp.pop();
+        temp.pop();
+    }
+
+    function requestMember(address _addr) public {
+        uint index = checkMemberWaitingArray(_addr);
+        require(index == 0, "user already in waiting array");
+        for (uint i = 0; i < memberArray.length; ++i)
+            if (memberArray[i] == _addr) revert("you are project member");
+        memberWaitingArray.push(_addr);
+    }
+
+    function addMember(address _addr) public {
+        //onlyOmwer
+        uint index = checkMemberWaitingArray(_addr);
+        require(index != 0, "user not in waiting array");
+        index--;
+        memberArray.push(_addr);
+        User a = Platform(msg.sender).mappingUser(_addr);
+        User h = Platform(msg.sender).mappingUser(owner);
+        uint tempHub = h.getHub();
+        h.addHub(a.getAuth());
+        a.addAuth(tempHub);
+        memberWaitingArray[index] = memberWaitingArray[
+            memberWaitingArray.length - 1
+        ];
+        memberWaitingArray.pop();
+    }
+
+    function checkMemberWaitingArray(
+        address _addr
+    ) internal view returns (uint) {
+        for (uint i = 0; i < memberWaitingArray.length; ++i) {
+            if (memberWaitingArray[i] == _addr) return i + 1;
+        }
+        return 0;
+    }
+
+    function sendHash(address _addr, string memory _ipfsHash) public {
+        //onlyMember
+        bool b = onlyMember(_addr);
+        if (!b) {
+            uint index = checkipfsWaitingArray(_ipfsHash);
+            require(index == 0, "ipfs hash already in waiting array");
+            for (uint i = 0; i < ipfsArray.length; ++i)
+                if (
+                    keccak256(abi.encodePacked(ipfsArray[i])) ==
+                    keccak256(abi.encodePacked(_ipfsHash))
+                ) revert("ipfs hash already in array");
+            ipfsWaitingArray.push(_ipfsHash);
+        }
     }
 
     function pushHash(address _addr, string memory _ipfsHash) public {
         //ipfs上鏈 onlyOwner
-        uint index = checkWaitingArray(_ipfsHash);
+        uint index = checkipfsWaitingArray(_ipfsHash);
         require(index != 0, "ipfs hash not in waiting array");
         index--;
         ipfsMap[_addr].push(_ipfsHash);
+        ipfsArray.push(_ipfsHash);
         ipfsWaitingArray[index] = ipfsWaitingArray[ipfsWaitingArray.length - 1];
         ipfsWaitingArray.pop();
     }
 
-    function checkWaitingArray(
+    function checkipfsWaitingArray(
         string memory _ipfsHash
     ) public view returns (uint) {
         //回傳未審核ipfs index, 0 = 沒上傳
-        for (uint i = 0; i < ipfsWaitingArray.length; ++i)
+        for (uint i = 0; i < ipfsWaitingArray.length; ++i) {
             if (
                 keccak256(abi.encodePacked(ipfsWaitingArray[i])) ==
                 keccak256(abi.encodePacked(_ipfsHash))
             ) return i + 1;
+        }
         return 0;
+    }
+
+    function getipfsArray() public view returns (string[] memory) {
+        //取得審核過的ipfs
+        return ipfsArray;
     }
 
     function getipfsMap(address _addr) public view returns (string[] memory) {
@@ -90,11 +179,17 @@ contract Project {
         return ipfsWaitingArray;
     }
 
+    function getMemberWaitingArray() public view returns (address[] memory) {
+        //owner取得未審核member
+        return memberWaitingArray;
+    }
+
     function getMemberArray() public view returns (address[] memory) {
         return memberArray;
     }
 }
 
+//---------------------------------------------------------------------------
 contract Platform {
     //平台功能
     mapping(address => User) userMap;
@@ -102,7 +197,8 @@ contract Platform {
     mapping(Project => address) projectOwnerMap;
     User[] userArray;
     event currency(uint _value);
-    event addr(address _addr);
+    event pro(Project _addr);
+
     modifier onlyUser() {
         bool b = true;
         for (uint i = 0; i < userArray.length; i++)
@@ -126,10 +222,10 @@ contract Platform {
         string memory _projectName
     ) public payable onlyUser {
         if (msg.value >= 1 ether) {
-            emit currency(msg.value);
             Project p = new Project{value: msg.value}(msg.sender, _projectName);
             projectMap[msg.sender].push(p);
             projectOwnerMap[p] = msg.sender;
+            mappingUser(msg.sender).addProject(msg.sender, p);
         } else {
             payable(msg.sender).transfer(msg.value);
             revert("you need to pay more than 1 ether");
@@ -146,26 +242,50 @@ contract Platform {
         return projectMap[_addr];
     }
 
-    function sendHash(uint _idx, string memory _ipfsHash) public onlyUser {
-        Project p = projectMap[msg.sender][_idx];
-        p.sendHash(_ipfsHash);
+    function sendHash(
+        Project _project,
+        string memory _ipfsHash
+    ) public onlyUser {
+        _project.sendHash(msg.sender, _ipfsHash);
     }
 
     function pushHash(
-        uint _idx,
+        Project _project,
         address _addr,
         string memory _ipfsHash
     ) public onlyUser {
-        Project p = projectMap[msg.sender][_idx];
-        require(projectOwnerMap[p] == msg.sender, "you are not project owner");
-        p.pushHash(_addr, _ipfsHash);
+        require(
+            projectOwnerMap[_project] == msg.sender,
+            "you are not project owner"
+        );
+        _project.pushHash(_addr, _ipfsHash);
     }
 
-    // function addMember(address _user, address _project) public {
-    //     User user = mappingUser(_user);
-    // }
+    function addMember(address _addr, Project _project) public {
+        require(
+            projectOwnerMap[_project] == msg.sender,
+            "you are not project owner"
+        );
+        projectMap[_addr].push(_project);
+        _project.addMember(_addr);
+    }
 
-    // function requestAddMember(address _user, address _project) public isUser{
-    //     User user = mappingUser(_user);
+    function requestMember(Project _project) public onlyUser {
+        _project.requestMember(msg.sender);
+    }
+
+    function scoreMember(
+        address _to,
+        uint _score,
+        Project _project
+    ) public onlyUser {
+        User from = mappingUser(msg.sender);
+        User to = mappingUser(_to);
+        _project.scoreMember(from, to, _score);
+    }
+
+    // function getNewProject() public view returns(Project){
+    //     uint i = projectMap[msg.sender].length - 1;
+    //     return projectMap[msg.sender][i];
     // }
 }

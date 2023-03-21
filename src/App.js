@@ -22,19 +22,6 @@ let contract = new web3.eth.Contract(
         "inputs": [
             {
                 "indexed": false,
-                "internalType": "address",
-                "name": "_addr",
-                "type": "address"
-            }
-        ],
-        "name": "addr",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
                 "internalType": "uint256",
                 "name": "_value",
                 "type": "uint256"
@@ -42,6 +29,37 @@ let contract = new web3.eth.Contract(
         ],
         "name": "currency",
         "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "contract Project",
+                "name": "_addr",
+                "type": "address"
+            }
+        ],
+        "name": "pro",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_addr",
+                "type": "address"
+            },
+            {
+                "internalType": "contract Project",
+                "name": "_project",
+                "type": "address"
+            }
+        ],
+        "name": "addMember",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
     },
     {
         "inputs": [
@@ -97,9 +115,9 @@ let contract = new web3.eth.Contract(
     {
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "_idx",
-                "type": "uint256"
+                "internalType": "contract Project",
+                "name": "_project",
+                "type": "address"
             },
             {
                 "internalType": "address",
@@ -133,9 +151,22 @@ let contract = new web3.eth.Contract(
     {
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "_idx",
-                "type": "uint256"
+                "internalType": "contract Project",
+                "name": "_project",
+                "type": "address"
+            }
+        ],
+        "name": "requestMember",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract Project",
+                "name": "_project",
+                "type": "address"
             },
             {
                 "internalType": "string",
@@ -148,7 +179,7 @@ let contract = new web3.eth.Contract(
         "stateMutability": "nonpayable",
         "type": "function"
     }
-], "0x1C968DB49d905A35bBd209A135f2D3D9CdA53693"
+], "0xf113aD08033F7DfFdAc07EA0E0e307BBf49d2066"
 )
 // const account1 = '0xa508dD875f10C33C52a8abb20E16fc68E981F186'
 // const account2 = '0xd4039eB67CBB36429Ad9DD30187B94f6A5122215'
@@ -160,9 +191,10 @@ function App() {//------------------------------------------------------------
   const [account, setAccount] = useState(null);
   const [balance, setBalance] = useState(null);
   const [userName, setUserName] = useState(null);
-  const [ethAddress, setethAddress] = useState(null);
+  const [projectAddress, setProjectAddress] = useState(null);
   const [ipfsHash, setipfsHash] = useState(null);
-
+  const [memberAddress, setMemberAddress] = useState(null);
+  const [newProject, setNewProject] = useState(null);
   useEffect(() => {
     if (window.ethereum) {
       window.ethereum.on("accountsChanged", accountsChanged);
@@ -170,7 +202,7 @@ function App() {//------------------------------------------------------------
     }
   }, []);
 
-  const registerChange = async(event) => {
+  const registerChange = async (event) => {
     setUserName(event.target.value);
   }
 
@@ -191,8 +223,16 @@ function App() {//------------------------------------------------------------
         from: account,
         gas: 1500000,
         value: 1000000000000000000//1 ether = 10^18 wei
-      }).then((txHash) => console.log(txHash))
-        .catch((error) => console.log(error));
+      }).then(
+        (txHash) => console.log(txHash),
+        // contract.methods.getNewProject().call({
+        //   from: account,
+        //   gas: 1500000
+        // }).then(
+        //   (txHash) => 
+        //   console.log(txHash)
+        //   ) 
+        );
     } catch (err) {
       console.log(err);
       setErrorMessage("There was a problem creating project");
@@ -246,7 +286,8 @@ function App() {//------------------------------------------------------------
     const file = files[0];
     const result = await ipfs.add(file);
     console.log(result.path);
-    contract.methods.sendHash(0, result.path).send({
+    console.log(projectAddress);
+    contract.methods.sendHash(projectAddress, result.path).send({
       from: account,
       gas: 1500000
     }).then(console.log);
@@ -261,8 +302,8 @@ function App() {//------------------------------------------------------------
     form.reset();
   };
 
-  const ethAddressChange = async (event) => {
-    setethAddress(event.target.value);
+  const projectAddressChange = async (event) => {
+    setProjectAddress(event.target.value);
   }
 
   const ipfsHashChange = async (event) => {
@@ -270,12 +311,38 @@ function App() {//------------------------------------------------------------
   }
 
   const pushHashHandler = async () => {//ipfs上鏈
-    try{
-      contract.methods.pushHash(0, ethAddress, ipfsHash).send({
+    try {
+      contract.methods.pushHash(projectAddress, memberAddress, ipfsHash).send({
         from: account,
         gas: 1500000
       }).then(console.log);
-    }catch(err){
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const memberAddressChange = async (event) => {
+    setMemberAddress(event.target.value);
+  }
+
+  const requestMemberHandler = async (event) => {
+    try {
+      contract.methods.requestMember(projectAddress).send({
+        from: account,
+        gas: 1500000
+      }).then(console.log);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const addMemberHandler = async (event) => {
+    try {
+      contract.methods.addMember(memberAddress, projectAddress).send({
+        from: account,
+        gas: 1500000
+      }).then(console.log);
+    } catch (err) {
       console.log(err);
     }
   }
@@ -302,20 +369,19 @@ function App() {//------------------------------------------------------------
           </Stack>
         </Paper>
       </div>
-      <div>
-        <br />
-        <Button variant="contained" onClick={createProjectHandler}>發起專案</Button>
-        <br />
-      </div>
+      <br />
       <div>
         <Paper elevation={3} sx={{ p: 3 }}>
           <Stack spacing={2}>
+            <Button variant="contained" onClick={createProjectHandler}>發起專案</Button>
+            <Typography variant="h6">New Project: {newProject} </Typography>
+            <TextField label="Project Address" onChange={projectAddressChange} />
             {ipfs && (
               <>
                 <h3>Upload file to IPFS</h3>
                 <form onSubmit={onSubmitHandler}>
                   <input type="file" name="file" />
-                  <button type="submit">Upload file to IPFS</button>
+                  <button type="submit">Upload file to IPFS & Send Hash</button>
                 </form>
               </>
             )}
@@ -329,9 +395,28 @@ function App() {//------------------------------------------------------------
                 />
               ))}
             </div>
-            <TextField label="Address" onChange={ethAddressChange} />
+          </Stack>
+        </Paper>
+      </div>
+      <br />
+      <div>
+        <Paper elevation={3} sx={{ p: 3 }}>
+          <Stack spacing={2}>
+            <h3>For Owner</h3>
+            <TextField label="Member Address" onChange={memberAddressChange} />
             <TextField label="IPFS Hash" onChange={ipfsHashChange} />
-            <Button variant="contained" onClick={pushHashHandler}>pushHash</Button>
+            <Button variant="contained" onClick={pushHashHandler}>push Hash</Button>
+            <TextField label="User Address" onChange={memberAddressChange} />
+            <Button variant="contained" onClick={addMemberHandler}>Add Member</Button>
+          </Stack>
+        </Paper>
+      </div>
+      <br />
+      <div>
+        <Paper elevation={3} sx={{ p: 3 }}>
+          <Stack spacing={2}>
+            <h3>For Member</h3>
+            <Button variant="contained" onClick={requestMemberHandler}>requset member</Button>
           </Stack>
         </Paper>
       </div>

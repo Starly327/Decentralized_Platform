@@ -22,6 +22,50 @@
 				"type": "constructor"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_hub",
+						"type": "uint256"
+					}
+				],
+				"name": "addAuth",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_auth",
+						"type": "uint256"
+					}
+				],
+				"name": "addHub",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_addr",
+						"type": "address"
+					},
+					{
+						"internalType": "contract Project",
+						"name": "_project",
+						"type": "address"
+					}
+				],
+				"name": "addProject",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "getAddr",
 				"outputs": [
@@ -29,6 +73,32 @@
 						"internalType": "address",
 						"name": "",
 						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getAuth",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getHub",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -76,11 +146,11 @@
 	},
 	"sources": {
 		"Decentralized_Platform/src/APP.sol": {
-			"keccak256": "0xdb0b67e046ed1adb89cd2f2ef5df67bad113626a9f4ab0f23cae85c438d087c5",
+			"keccak256": "0x6278a92e093a3179ea999e8c9fdd1421ef7d497d857a5b9f1cfb8b5f4c3daea7",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://082304938225d4aa067c1de4e07b1a3f27a5bda4111785544a14d1c68e88b996",
-				"dweb:/ipfs/QmRG7UVJ7mGdNwSemvv9U1KK9uaqxwaf5eiaDnWiBscE2c"
+				"bzz-raw://9278088471b7783259e56f34c05ae1afd24e838e1c8517cbf98bd0793448ed59",
+				"dweb:/ipfs/QmYwD7WVRYf69hpiAfXZh1AGhVKUFCH3A928ynxPBK4LEb"
 			]
 		}
 	},
