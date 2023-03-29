@@ -179,11 +179,6 @@
 						"internalType": "contract User",
 						"name": "_to",
 						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_score",
-						"type": "uint256"
 					}
 				],
 				"name": "scoreMember",
@@ -238,11 +233,11 @@
 	},
 	"sources": {
 		"Decentralized_Platform/src/APP.sol": {
-			"keccak256": "0x6278a92e093a3179ea999e8c9fdd1421ef7d497d857a5b9f1cfb8b5f4c3daea7",
+			"keccak256": "0xe2ad146ddf5fbd4be9f53a5f83a877f6e096d75d86e6ce2b99a0c32de4e22ce5",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://9278088471b7783259e56f34c05ae1afd24e838e1c8517cbf98bd0793448ed59",
-				"dweb:/ipfs/QmYwD7WVRYf69hpiAfXZh1AGhVKUFCH3A928ynxPBK4LEb"
+				"bzz-raw://a84cba78b5a5e2a4166eb06222dfb1269cfdab55781625d8749b26408396509d",
+				"dweb:/ipfs/QmdmR9fLw37hmDgWeRCHrw8wq34iMaoUN9oQ1ZohBG7ZMN"
 			]
 		}
 	},

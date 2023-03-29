@@ -74,7 +74,7 @@ contract Project {
         if (b) revert("not project member");
     }
 
-    function scoreMember(User _from, User _to, uint _score) public {
+    function scoreMember(User _from, User _to) public {
         //onlyMember
         onlyMember(_from.getAddr());
         onlyMember(_to.getAddr());
@@ -165,12 +165,12 @@ contract Project {
     }
 
     function getipfsArray() public view returns (string[] memory) {
-        //取得審核過的ipfs
+        //onlyMember取得審核過的ipfs
         return ipfsArray;
     }
 
     function getipfsMap(address _addr) public view returns (string[] memory) {
-        //取得成員審核過的ipfs
+        //onlyMember取得成員審核過的ipfs
         return ipfsMap[_addr];
     }
 
@@ -185,6 +185,7 @@ contract Project {
     }
 
     function getMemberArray() public view returns (address[] memory) {
+        //onlyMember
         return memberArray;
     }
 }
@@ -274,18 +275,43 @@ contract Platform {
         _project.requestMember(msg.sender);
     }
 
-    function scoreMember(
-        address _to,
-        uint _score,
+    // function scoreMember(
+    //     address _to,
+    //     Project _project
+    // ) public onlyUser {
+    //     User from = mappingUser(msg.sender);
+    //     User to = mappingUser(_to);
+    //     _project.scoreMember(from, to);
+    // }
+
+    function getipfsWaitingArray(
         Project _project
-    ) public onlyUser {
-        User from = mappingUser(msg.sender);
-        User to = mappingUser(_to);
-        _project.scoreMember(from, to, _score);
+    ) public view returns (string[] memory) {
+        require(
+            projectOwnerMap[_project] == msg.sender,
+            "you are not project owner"
+        );
+        return _project.getipfsWaitingArray();
     }
 
-    // function getNewProject() public view returns(Project){
-    //     uint i = projectMap[msg.sender].length - 1;
-    //     return projectMap[msg.sender][i];
-    // }
+    function getMemberWaitingArray(
+        Project _project
+    ) public view returns (address[] memory) {
+        require(
+            projectOwnerMap[_project] == msg.sender,
+            "you are not project owner"
+        );
+        return _project.getMemberWaitingArray();
+    }
+
+    function getMemberArray(
+        Project _project
+    ) public view returns (address[] memory) {
+        return _project.getMemberArray();
+    }
+
+    function checkProjectRole(Project _project) public view returns (bool) {
+        if (projectOwnerMap[_project] == msg.sender) return true;
+        else return false;
+    }
 }
