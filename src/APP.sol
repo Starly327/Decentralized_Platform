@@ -21,12 +21,12 @@ contract User {
         projectArray.push(_project);
     }
 
-    function addHub(uint _auth) public {
-        hub += _auth;
+    function setHub(uint _hub) public {
+        hub = _hub;
     }
 
-    function addAuth(uint _hub) public {
-        authority += _hub;
+    function setAuth(uint _auth) public {
+        authority = _auth;
     }
 
     function getHub() public view returns (uint) {
@@ -105,11 +105,11 @@ contract Project {
         require(index != 0, "user not in waiting array");
         index--;
         memberArray.push(_addr);
-        User a = Platform(msg.sender).mappingUser(_addr);
-        User h = Platform(msg.sender).mappingUser(owner);
-        uint tempHub = h.getHub();
-        h.addHub(a.getAuth());
-        a.addAuth(tempHub);
+        // User a = Platform(msg.sender).mappingUser(_addr);
+        // User h = Platform(msg.sender).mappingUser(owner);
+        // uint tempHub = h.getHub();
+        // h.setHub();
+        // a.setAuth();
         memberWaitingArray[index] = memberWaitingArray[
             memberWaitingArray.length - 1
         ];

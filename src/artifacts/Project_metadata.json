@@ -233,11 +233,11 @@
 	},
 	"sources": {
 		"Decentralized_Platform/src/APP.sol": {
-			"keccak256": "0xe2ad146ddf5fbd4be9f53a5f83a877f6e096d75d86e6ce2b99a0c32de4e22ce5",
+			"keccak256": "0x3c0c62b527008d8868f55476500a91521dc7f48c4955a8ef645eaaf6d743a351",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://a84cba78b5a5e2a4166eb06222dfb1269cfdab55781625d8749b26408396509d",
-				"dweb:/ipfs/QmdmR9fLw37hmDgWeRCHrw8wq34iMaoUN9oQ1ZohBG7ZMN"
+				"bzz-raw://6bd920116aa4e91fa15502a4eeffb55f1f43874e9943e3e9587d7b2f3c57884b",
+				"dweb:/ipfs/QmVPDGQXZv4GnbA1wMK6FPcowBFcP4dfLBbM7UH15L6SXC"
 			]
 		}
 	},
